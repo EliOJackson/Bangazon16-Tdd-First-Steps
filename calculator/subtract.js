@@ -1,3 +1,3 @@
-module.exports = function (x, y) {
-    return +x - +y;
+module.exports = function (num1, num2) {
+    return +num1 - +num2;
 }
