@@ -1,31 +1,62 @@
-# Bangazon16-Tdd-First-Steps
-TDD First Steps
-Now it's time to try building something by starting with only a single, failing test. Sounds like something Morpheus would say in The Matrix, doesn't it?
+# Introduction to SQL queries with Music History
+Now that you have created a visual diagram of how the tables in Music History relate to each other, let's stay in this database while you learn how to query it to get back exactly the data you need.
 
-The app will sound familiar. You may have built something just like it in the front end. But the process for building it will not be familiar.
+## Setup
 
-Requirements
-Construct a simple calculator, using modular structure. Create modules for each operation: add, subtract, multiply, divide, plus a module for pulling in all of those operations, just as you did in the diceroll exercise.
+Create a file called `queries.sql`
 
-Build the math modules using TDD with Mocha and Chai assertions. Remember, with unit tests your concern is with individual functions that return some kind of value. Start with an empty module and a single test. Something like...
+> **Note:** The `.sql` extension is common practice for files storing SQL queries
 
-describe('add', () => {
-  it('should be a function', () => {
-    isFunction(add);
-  });
-});
-It will fail, because this is the first code you have written for you app. There is no add method. Make that test pass by writing a function that does nothing, then rinse and repeat with every module until you have the skeleton of a project. Return to each method and write new tests for number of arguments, the type of data the function returns, whether the method returns anything at all, etc. Test multiple edge cases. What if no arguments are passed in? What if a string gets passed in where you need a number, or vice versa? What happens with negative numbers? Decimals? Leave no stone unturned!
+#### Talking to a Database
 
-Resources
-package.json
-You will need to run npm init -y to create a package.json. Then run npm install --save-dev mocha chai
+###### SQL Statements
+ * SQL keywords are written in CAPS
+ * Basic Structure of a SQL statement:
+  `SELECT ______
+  FROM ______
+  JOIN ______ ON ______
+  WHERE ______`
 
-Also, add the following to your package.json:
+* Example:  `SELECT * FROM employees WHERE name LIKE ‘b%’`
+   * LIKE means “matches a pattern” and % means “starts with” (wildcard).
 
-  "scripts": {
-    "test": "mocha -R list --watch --recursive"
-  }
-This will tell mocha to run the tests every time you update a test file, to use the "list" reporter (look at the docs to pick another style if you'd like), and to look into any nested test folders for additional test files (not necessary at this point, but nice to know you can do that), when you run npm test on the command line. If your tests come out all one color, try adding the --colors flag as well.
+* Example 2: `SELECT products.id, products.name FROM order_details JOIN products ON  order_details.product_id = products.id WHERE order_details.order_id = 10250`
 
-test folder
-Create a test directory to store your test files in. Mocha will default to looking there for your tests. Can I type 'test' too many times? testtesttest. Looks like I can't.
+###### Joins
+* http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/
+* With a join, you must specify how the table is joined using ON. Otherwise, you will get all the combinations possible of one table row matched with another table row.
+  * **Inner Join** matches one table with another table row for row. If one row doesn’t have its pair on another table, it will be excluded. It will only show matching row pairs.
+  * **Outer Join** matches two tables row for row but includes rows that are not paired up, aka rows that have a pair with a null in the other table.
+
+## Instructions
+
+1. Open up the database file in the *DB Browser for SQLite* application to see it
+1. Copy and paste the queries below into your `queries.sql` file and comment them out. Then you can write a query for each requrement and refer back to them later as a resource
+1. When you have written a query, paste it into DB Browser and test it by clicking the tab labeled "Execute SQL"
+
+For each of the following exercises, provide the appropriate query. Everything from class and the [Sqlite](http://www.sqlite.org/) documentation for SQL [keywords](https://www.sqlite.org/lang.html) and [functions](https://www.sqlite.org/lang_corefunc.html) is fair game.
+
+1. Query all of the entries in the `Genre` table
+1. Using the `INSERT` statement, add one of your favorite artists to the `Artist` table.
+1. Using the `INSERT` statement, add one, or more, albums by your artist to the `Album` table.
+1. Using the `INSERT` statement, add some songs that are on that album to the `Song` table.
+1. Write a `SELECT` query that provides the song titles, album title, and artist name for all of the data you just entered in. Use the [`LEFT JOIN`](https://www.tutorialspoint.com/sql/sql-using-joins.htm) keyword sequence to connect the tables, and the `WHERE` keyword to filter the results to the album and artist you added. Here is some more info on [joins](http://www.dofactory.com/sql/join) that might help.
+    > **Reminder:** Direction of join matters. Try the following statements and see the difference in results.
+
+    ```
+    SELECT a.Title, s.Title FROM Album a LEFT JOIN Song s ON s.AlbumId = a.AlbumId;
+    SELECT a.Title, s.Title FROM Song s LEFT JOIN Album a ON s.AlbumId = a.AlbumId;
+    ```
+1. Write a `SELECT` statement to display how many songs exist for each album. You'll need to use the `COUNT()` function and the `GROUP BY` keyword sequence.
+1. Write a `SELECT` statement to display how many songs exist for each artist. You'll need to use the `COUNT()` function and the `GROUP BY` keyword sequence.
+1. Write a `SELECT` statement to display how many songs exist for each genre. You'll need to use the `COUNT()` function and the `GROUP BY` keyword sequence.
+1. Using `MAX()` function, write a select statement to find the album with the longest duration. The result should display the album title and the duration.
+1. Using `MAX()` function, write a select statement to find the song with the longest duration. The result should display the song title and the duration.
+1. Modify the previous query to also display the title of the album.
+
+# Online SQL Tutorial
+
+There are two online tutorials that are very handy tools if you ever want to quickly churn through the basics of the SQL language against a pre-built database.
+
+1. [Basic SQL Course](http://www.sqlcourse.com/intro.html)
+2. [Intermediate SQL Course](http://www.sqlcourse2.com/intro2.html)
